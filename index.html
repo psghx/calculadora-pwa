@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Comisiones</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 2em;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+            text-align: left;
+        }
+
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .results {
+            margin-top: 15px;
+            text-align: left;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .results p {
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results p strong {
+            color: #007bff;
+        }
+
+        .results p.total-commission {
+            font-size: 17px;
+            font-weight: bold;
+            color: #e67e22;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .results p.total-commission strong {
+            color: #e67e22;
+        }
+
+        .results p.final-amount {
+            font-size: 19px;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        .results p.final-amount strong {
+            color: #28a745;
+        }
+
+        .results p span {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .results p.total-commission span {
+            color: #e67e22;
+        }
+
+        .results p.final-amount span {
+            color: #28a745;
+        }
+
+        .separator {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+            margin: 40px 0;
+        }
+
+        .calculation-section {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            background-color: #fcfcfc;
+        }
+
+        .calculation-section:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.1em;
+            }
+
+            input[type="number"],
+            button {
+                font-size: 15px;
+                padding: 10px;
+            }
+
+            .results p {
+                font-size: 15px;
+            }
+
+            .results p.total-commission,
+            .results p.final-amount {
+                font-size: 16px;
+            }
+
+            .separator {
+                margin: 30px 0;
+            }
+
+            .calculation-section {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.6em;
+            }
+
+            h2 {
+                font-size: 1em;
+            }
+
+            input[type="number"],
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .results p {
+                font-size: 14px;
+            }
+
+            .results p.total-commission,
+            .results p.final-amount {
+                font-size: 15px;
+            }
+        }
+    </style>
+
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQ2FsY3VsYWRvcmEgZGUgQ29taXNpb25lcyIsInNob3J0X25hbWUiOiJDb21pc2lvbmVzIiwiZGVzY3JpcHRpb24iOiJDYWxjdWxhZG9yYSBwYXJhIGNvbWlzaW9uZXMgZGUgUGF5cGhvbmUgeSBQcm8gU2VydmljZS4iLCJzdGFydF91cmwiOiIuL2luZGV4Lmh0bWwiLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwidGhlbWVfY29sb3IiOiIjMDA3YmZmIiwiaWNvbnMiOlt7InNyYyI6Imljb25zL2ljb24tMTkyeDE5Mi5wbmciLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIn0seyJzcmMiOiJpY29ucy9pY29uLTUxMng1MTIucG5nIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3BuZyJ9XX0=">
+    <meta name="theme-color" content="#007bff">
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Comisiones</h1>
+
+        <div class="calculation-section">
+            <h2>Calcular Monto a Recibir (Desde Monto a Cobrar)</h2>
+            <label for="monto">Monto a Cobrar:</label>
+            <input type="number" id="monto" placeholder="Ingrese el monto" min="0" step="0.01">
+            <button id="calcularBtn">Calcular</button>
+
+            <div class="results">
+                <p><strong>Comisión PAYPHONE:</strong> <span id="comisionPayphone">0.00</span></p>
+                <p><strong>Monto después de PAYPHONE:</strong> <span id="montoDespuesPayphone">0.00</span></p>
+                <p><strong>Comisión PRO SERVICE (10%):</strong> <span id="comisionProService">0.00</span></p>
+                <p class="total-commission"><strong>Comisión TOTAL:</strong> <span id="comisionTotalNormal">0.00</span></p>
+                <p class="final-amount"><strong>Monto a Recibir del Cliente:</strong> <span id="montoARecibirCliente">0.00</span></p>
+            </div>
+        </div>
+
+        <hr class="separator">
+
+        <div class="calculation-section">
+            <h2>Calcular Pago Necesario (Desde Monto Fijo a Recibir)</h2>
+            <label for="montoFijoRecibir">Monto Fijo a Recibir:</label>
+            <input type="number" id="montoFijoRecibir" placeholder="Ingrese el monto fijo" min="0" step="0.01">
+            <button id="calcularPagoNecesarioBtn">Calcular Pago Necesario</button>
+
+            <div class="results">
+                <p><strong>Comisión PRO SERVICE:</strong> <span id="comisionProServiceInverso">0.00</span></p>
+                <p><strong>Monto Antes de PRO SERVICE:</strong> <span id="montoAntesProService">0.00</span></p>
+                <p><strong>Comisión PAYPHONE:</strong> <span id="comisionPayphoneInverso">0.00</span></p>
+                <p class="total-commission"><strong>Comisión TOTAL:</strong> <span id="comisionTotalInverso">0.00</span></p>
+                <p class="final-amount"><strong>Monto TOTAL que el cliente debe pagar:</strong> <span id="montoTotalPagar">0.00</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script id="sw-registration-script">
+        const CACHE_NAME = 'comisiones-calculator-v1';
+        const urlsToCache = [
+            './index.html',
+            './icons/icon-192x192.png',
+            './icons/icon-512x512.png'
+        ];
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./index.html', { scope: './' }) // Registra index.html como SW
+                    .then(registration => {
+                        console.log('Service Worker registrado con éxito:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Fallo el registro del Service Worker:', error);
+                    });
+            });
+        }
+
+        // Simula el comportamiento del Service Worker para un solo archivo
+        // Esto se ejecuta *dentro* del Service Worker cuando se registra
+        if (self.registration && self.registration.scope === self.location.origin + '/') {
+            self.addEventListener('install', event => {
+                event.waitUntil(
+                    caches.open(CACHE_NAME)
+                        .then(cache => {
+                            console.log('Service Worker: Cacheando archivos estáticos');
+                            return cache.addAll(urlsToCache);
+                        })
+                        .catch(err => {
+                            console.error('Service Worker: Fallo al cachear durante la instalación', err);
+                        })
+                );
+            });
+
+            self.addEventListener('fetch', event => {
+                event.respondWith(
+                    caches.match(event.request)
+                        .then(response => {
+                            if (response) {
+                                console.log('Service Worker: Sirviendo desde caché:', event.request.url);
+                                return response;
+                            }
+                            console.log('Service Worker: Sirviendo desde red:', event.request.url);
+                            return fetch(event.request);
+                        })
+                        .catch(error => {
+                            console.error('Service Worker: Fallo en fetch para:', event.request.url, error);
+                        })
+                );
+            });
+
+            self.addEventListener('activate', event => {
+                event.waitUntil(
+                    caches.keys().then(cacheNames => {
+                        return Promise.all(
+                            cacheNames.map(cache => {
+                                if (cache !== CACHE_NAME) {
+                                    console.log('Service Worker: Eliminando caché antigua:', cache);
+                                    return caches.delete(cache);
+                                }
+                            })
+                        );
+                    })
+                );
+                console.log('Service Worker: Activado y listo para interceptar peticiones.');
+            });
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const montoInput = document.getElementById('monto');
+            const calcularBtn = document.getElementById('calcularBtn');
+            const comisionPayphoneSpan = document.getElementById('comisionPayphone');
+            const montoDespuesPayphoneSpan = document.getElementById('montoDespuesPayphone');
+            const comisionProServiceSpan = document.getElementById('comisionProService');
+            const comisionTotalNormalSpan = document.getElementById('comisionTotalNormal');
+            const montoARecibirClienteSpan = document.getElementById('montoARecibirCliente');
+
+            const montoFijoRecibirInput = document.getElementById('montoFijoRecibir');
+            const calcularPagoNecesarioBtn = document.getElementById('calcularPagoNecesarioBtn');
+            const comisionProServiceInversoSpan = document.getElementById('comisionProServiceInverso');
+            const montoAntesProServiceSpan = document.getElementById('montoAntesProService');
+            const comisionPayphoneInversoSpan = document.getElementById('comisionPayphoneInverso');
+            const comisionTotalInversoSpan = document.getElementById('comisionTotalInverso');
+            const montoTotalPagarSpan = document.getElementById('montoTotalPagar');
+
+            calcularBtn.addEventListener('click', calcularComisiones);
+            calcularPagoNecesarioBtn.addEventListener('click', calcularPagoNecesario);
+
+            function calcularComisiones() {
+                const montoACobrar = parseFloat(montoInput.value);
+
+                if (isNaN(montoACobrar) || montoACobrar <= 0) {
+                    alert('Por favor, ingrese un monto válido mayor a cero para el Monto a Cobrar.');
+                    comisionPayphoneSpan.textContent = '0.00';
+                    montoDespuesPayphoneSpan.textContent = '0.00';
+                    comisionProServiceSpan.textContent = '0.00';
+                    comisionTotalNormalSpan.textContent = '0.00';
+                    montoARecibirClienteSpan.textContent = '0.00';
+                    return;
+                }
+
+                const comisionBasePayphone = montoACobrar * 0.05;
+                const ivaPayphone = comisionBasePayphone * 0.15;
+                const comisionPayphone = comisionBasePayphone + ivaPayphone;
+
+                const montoDespuesPayphone = montoACobrar - comisionPayphone;
+
+                const comisionProService = montoDespuesPayphone * 0.10;
+
+                const comisionTotalNormal = comisionPayphone + comisionProService;
+
+                const montoARecibirCliente = montoDespuesPayphone - comisionProService;
+
+                comisionPayphoneSpan.textContent = comisionPayphone.toFixed(2);
+                montoDespuesPayphoneSpan.textContent = montoDespuesPayphone.toFixed(2);
+                comisionProServiceSpan.textContent = comisionProService.toFixed(2);
+                comisionTotalNormalSpan.textContent = comisionTotalNormal.toFixed(2);
+                montoARecibirClienteSpan.textContent = montoARecibirCliente.toFixed(2);
+            }
+
+            function calcularPagoNecesario() {
+                const montoFijoARecibir = parseFloat(montoFijoRecibirInput.value);
+
+                if (isNaN(montoFijoARecibir) || montoFijoARecibir <= 0) {
+                    alert('Por favor, ingrese un monto válido mayor a cero para el Monto Fijo a Recibir.');
+                    comisionProServiceInversoSpan.textContent = '0.00';
+                    montoAntesProServiceSpan.textContent = '0.00';
+                    comisionPayphoneInversoSpan.textContent = '0.00';
+                    comisionTotalInversoSpan.textContent = '0.00';
+                    montoTotalPagarSpan.textContent = '0.00';
+                    return;
+                }
+
+                const montoAntesProService = montoFijoARecibir / 0.90;
+                const comisionProServiceInverso = montoAntesProService - montoFijoARecibir;
+
+                const montoTotalPagar = montoAntesProService / 0.9425;
+                const comisionPayphoneInverso = montoTotalPagar - montoAntesProService;
+
+                const comisionTotalInverso = comisionPayphoneInverso + comisionProServiceInverso;
+
+                comisionProServiceInversoSpan.textContent = comisionProServiceInverso.toFixed(2);
+                montoAntesProServiceSpan.textContent = montoAntesProService.toFixed(2);
+                comisionPayphoneInversoSpan.textContent = comisionPayphoneInverso.toFixed(2);
+                comisionTotalInversoSpan.textContent = comisionTotalInverso.toFixed(2);
+                montoTotalPagarSpan.textContent = montoTotalPagar.toFixed(2);
+            }
+        });
+    </script>
+</body>
+</html>
